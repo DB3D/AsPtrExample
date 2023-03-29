@@ -1,0 +1,12 @@
+﻿  readmem.cpp
+C:\Users\doria\Desktop\3.4\source\blender-3.4.1\source\blender\makesdna\DNA_action_types.h(178,9): warning C4200: nonstandard extension used: zero-sized array in struct/union
+C:\Users\doria\Desktop\3.4\source\blender-3.4.1\source\blender\makesdna\DNA_action_types.h(178,9): message : This member will be ignored by a defaulted constructor or copy/move assignment operator
+C:\Users\doria\Desktop\3.4\source\blender-3.4.1\source\blender\blenkernel\BKE_main.h(45,8): warning C4200: nonstandard extension used: zero-sized array in struct/union
+C:\Users\doria\Desktop\3.4\source\blender-3.4.1\source\blender\blenkernel\BKE_main.h(45,8): message : This member will be ignored by a defaulted constructor or copy/move assignment operator
+     Creating library C:\Users\doria\AppData\Roaming\Blender Foundation\Blender\3.4\scripts\addons\PydAsPtr\VS17 Project\x64\Release\ReadMemProject.lib and object C:\Users\doria\AppData\Roaming\Blender Foundation\Blender\3.4\scripts\addons\PydAsPtr\VS17 Project\x64\Release\ReadMemProject.exp
+  Generating code
+  0 of 80 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Project1.vcxproj -> C:\Users\doria\AppData\Roaming\Blender Foundation\Blender\3.4\scripts\addons\PydAsPtr\VS17 Project\x64\Release\ReadMemProject.dll
