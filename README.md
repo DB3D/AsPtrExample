@@ -5,9 +5,9 @@ Curent compiled python libraries `\\pydll\readmem.pyd` are for WinOS only.
 Whole VisualStudio project has also been uploaded, available within `\\VS17 Project\`
 
 This example project consists of 3 example:
-Example1: Reading the name from Object struct. We obtained the struct by including the original source code in our IDE
-Example2: Reading Mesh.vertices/edges/polygons/loops by looping their arrays within memory, we replicate the simple meshdata struct of blender, and render a quick image that we load back in an new image data called "AsPointerRender". See image below
-Example3: Reading Mesh struct directly, the Mesh struct is harder to reproduce and to link in your project.
+- Example1: Reading the name from Object struct. We obtained the struct by including the original source code in our IDE
+- Example2: Reading Mesh.vertices/edges/polygons/loops by looping their arrays within memory, we replicate the simple meshdata struct of blender, and render a quick image that we load back in an new image data called "AsPointerRender". See image below
+- Example3: Reading Mesh struct directly, the Mesh struct is harder to reproduce and to link in your project.
 
 ![Screenshot 2023-03-30 152718](https://user-images.githubusercontent.com/56720730/228869371-422ea721-bdf5-433e-9312-0f7000520a51.jpg)
 
