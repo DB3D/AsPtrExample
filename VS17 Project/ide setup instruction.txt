@@ -1,0 +1,8 @@
+
+In this project, i'm using Windows10 with VisualStudio2017 IDE
+
+Make sure: 
+- Set up requisites for Python C++ environments (same python version as blender 3.40, & set up Linker libs & additional directories ect..)
+- Set up the include folder of blender source code for the _read_obj_data.cpp Example
+- Your IDE is set up to "ISO C++17 Standard (/std:c++17)"
+
