@@ -4,8 +4,10 @@ Projected created on WindowsOS, using Visual Studio 2017 and blender 3.40 series
 
 This example project consists of 3 example:
 Example1: Reading the name from Object struct. We obtained the struct by including the original source code in our IDE
-Example2: Reading Mesh.vertices/edges/polygons/loops by looping their arrays, we replicate the simple meshdata struct in the project
+Example2: Reading Mesh.vertices/edges/polygons/loops by looping their arrays within memory, we replicate the simple meshdata struct of blender, and render a quick image that we load back in an new image data called "AsPointerRender". See image below
 Example3: Reading Mesh struct directly, the Mesh struct is harder to reproduce and to link in your project.
+
+![Screenshot 2023-03-30 152718](https://user-images.githubusercontent.com/56720730/228869371-422ea721-bdf5-433e-9312-0f7000520a51.jpg)
 
 revelant files:
 - `\\__ini__.py`
@@ -31,3 +33,6 @@ TODO `_read_mesh_elements.cpp`:
 TODO `_read_mesh_data.cpp`:
 
 - Resolve crashing issue, accessing Mesh struct is challenging. Coudln't figure that out yet. We are trying to follow the LuxCore method  https://github.com/LuxCoreRender/LuxCore/blob/master/include/luxcore/pyluxcore/blender_types.h
+
+
+
