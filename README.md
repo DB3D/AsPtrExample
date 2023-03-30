@@ -23,7 +23,10 @@ https://github.com/DB3D/BpyAddonWithCppModule/blob/main/PydTest/pyd/Project1/add
 ------------------------------------------------------------------------------------------------------
 
 TODO `_read_mesh_elements.cpp`:
+
 - Find how to return a numpy array instead of bytearray for the generated pixels
 - Find if it is possible to direcyl pass `image.pixels.as_pointer()` within our C++ application and write the render from memory?
+
 TODO `_read_mesh_data.cpp`:
+
 - Resolve crashing issue, accessing Mesh struct is challenging. Coudln't figure that out yet. We are trying to follow the LuxCore method  https://github.com/LuxCoreRender/LuxCore/blob/master/include/luxcore/pyluxcore/blender_types.h
