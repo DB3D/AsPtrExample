@@ -1,5 +1,5 @@
 # AsPtrExample
-This plugin demonstrate the use of as_pointer() in Object and Mesh type
+This blender plugin demonstrate the use of as_pointer() in Object and Mesh type
 Projected created on WindowsOS, using Visual Studio 2017 and blender 3.40 series
 
 This example project consists of 3 example:
@@ -16,8 +16,8 @@ revelant files:
 
 See the comment on each of these files
 
-We are relying on .pyd to read blender memory, see "_FailedAttempt" folder
-If you never built your own .pyd before, start with a simpler project, for example:
+Prerequisite:
+We are relying on .pyd to read blender memory, looks like we don't have much choice (see ".FailedAttempt" folder where i tried to read mem from external process, failed due to memory compartmentalization i bet) If you never built your own .pyd before, start with a simpler project, for example:
 https://github.com/DB3D/BpyAddonWithCppModule/blob/main/PydTest/pyd/Project1/add.cpp
 
 ------------------------------------------------------------------------------------------------------
@@ -26,6 +26,7 @@ TODO `_read_mesh_elements.cpp`:
 
 - Find how to return a numpy array instead of bytearray for the generated pixels
 - Find if it is possible to direcyl pass `image.pixels.as_pointer()` within our C++ application and write the render from memory?
+- Implement all these finding in a new "SimpleRenderEngine" Github project
 
 TODO `_read_mesh_data.cpp`:
 
