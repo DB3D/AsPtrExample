@@ -18,8 +18,6 @@ revelant files:
 - `\\VS17 Project\_read_mesh_elements.cpp` (example2)
 - `\\VS17 Project\_read_mesh_data.cpp` (example3)  
 
-See the comment on each of these files
-
 Prerequisite:
 We are relying on .pyd to read blender memory, looks like we don't have much choice (see ".FailedAttempt" folder where i tried to read mem from external process, failed due to memory compartmentalization i bet) If you never built your own .pyd before, start with a simpler project, for example:
 https://github.com/DB3D/BpyAddonWithCppModule/blob/main/PydTest/pyd/Project1/add.cpp
