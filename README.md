@@ -2,7 +2,7 @@
 This blender plugin demonstrate the use of as_pointer() in Object and Mesh type
 Projected created on WindowsOS, using Visual Studio 2017 and blender 3.40 series. 
 Curent compiled python libraries `\\pydll\readmem.pyd` are for WinOS only.
-Whole has also been uploaded, available within `\\VS17 Project\`
+Whole VisualStudio project has also been uploaded, available within `\\VS17 Project\`
 
 This example project consists of 3 example:
 Example1: Reading the name from Object struct. We obtained the struct by including the original source code in our IDE
