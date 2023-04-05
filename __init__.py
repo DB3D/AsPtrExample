@@ -1,6 +1,6 @@
 
 bl_info = {
-    "name": "PydAsPtr",
+    "name": "AsPtrExample",
     "author": "bd3d, GPT4",
     "version": (1, 0),
     "blender": (3, 4, 0),
@@ -12,49 +12,35 @@ bl_info = {
 
 
 # Test this plugin via the console: 
-# >>> C.object.pydasptr.read_obj_data()
-# >>> C.object.data.pydasptr.read_mesh_data()
-# >>> C.object.data.pydasptr.render_mesh() -> & open "AsPointerRender" image
-
-
-#easy quick reload. You will need to shut down blender, no hotreload implemented in this project
-if True: 
-    import sys, shutil, os
-    plug_path = os.path.dirname(__file__) #.../scripts/addons/PydAsPtr/
-    pyd_path = os.path.join(plug_path,"pydll","readmem.pyd")
-    dll_path = os.path.join(plug_path,"VS17 Project","x64","Release","ReadMemProject.dll")
-    if os.path.exists(dll_path):
-        if os.path.exists(pyd_path):
-            os.chmod(pyd_path, 0o777)  # make the file writable
-            os.remove(pyd_path)
-        shutil.copyfile(dll_path, pyd_path)
-
+# >>> C.object.asptrex.read_obj_data()
+# >>> C.object.data.asptrex.read_mesh_data()
+# >>> C.object.data.asptrex.render_mesh() -> & open "AsPointerRender" image
 
 
 import bpy
 import numpy as np
 
-from . import pydll #access ../pydll/readmem.pyd
+from . import pyext #access ../pyext/readmem.pyd
 
 
-class PYDASPTR_PR_Object(bpy.types.PropertyGroup):
+class ASPTREXAMPLE_PR_Object(bpy.types.PropertyGroup):
 
     def read_obj_data(self,):
         """pass object adress and access it's name"""
 
         obj = self.id_data
-        r = pydll.readmem.read_obj_data(
+        r = pyext.readmem.read_obj_data(
             obj.as_pointer(),
             )
         return r
 
-class PYDASPTR_PR_Mesh(bpy.types.PropertyGroup):
+class ASPTREXAMPLE_PR_Mesh(bpy.types.PropertyGroup):
 
     def read_mesh_data(self,):
         """pass mesh data as pointer, LuxCore style, not advised  WIP currently it's crashing"""
 
         mesh = self.id_data
-        r = pydll.readmem.read_mesh_data(
+        r = pyext.readmem.read_mesh_data(
             mesh.as_pointer(),
             )
         return r
@@ -93,7 +79,7 @@ class PYDASPTR_PR_Mesh(bpy.types.PropertyGroup):
         # Verts/Edges/Polygons/Loops [0] adress and their length
         # Advice from Brecht: https://devtalk.blender.org/t/creating-a-mesh-struct-similar-to-blender/28601/9?u=bd3d
         
-        pixels_byte_array = pydll.readmem.read_mesh_elements(
+        pixels_byte_array = pyext.readmem.read_mesh_elements(
             mesh.vertices[0].as_pointer(),
             mesh.edges[0].as_pointer(),
             mesh.polygons[0].as_pointer(),
@@ -117,22 +103,40 @@ class PYDASPTR_PR_Mesh(bpy.types.PropertyGroup):
 
         return None
 
+
+def cleanse_modules():
+    """remove all plugin modules from sys.modules, will load them again, creating an effective hit-reload soluton
+    Not sure why blender is no doing this already whe disabling a plugin..."""
+    #https://devtalk.blender.org/t/plugin-hot-reload-by-cleaning-sys-modules/20040
+
+    import sys
+    all_modules = sys.modules 
+    all_modules = dict(sorted(all_modules.items(),key= lambda x:x[0])) #sort them
+    
+    for k,v in all_modules.items():
+        if k.startswith(__name__):
+            del sys.modules[k]
+
+    return None 
+
 def register():
 
-    bpy.utils.register_class(PYDASPTR_PR_Object)
-    bpy.utils.register_class(PYDASPTR_PR_Mesh)
+    bpy.utils.register_class(ASPTREXAMPLE_PR_Object)
+    bpy.utils.register_class(ASPTREXAMPLE_PR_Mesh)
 
-    bpy.types.Object.pydasptr = bpy.props.PointerProperty(type=PYDASPTR_PR_Object)
-    bpy.types.Mesh.pydasptr = bpy.props.PointerProperty(type=PYDASPTR_PR_Mesh)
+    bpy.types.Object.asptrex = bpy.props.PointerProperty(type=ASPTREXAMPLE_PR_Object)
+    bpy.types.Mesh.asptrex = bpy.props.PointerProperty(type=ASPTREXAMPLE_PR_Mesh)
 
     return None
 
 def unregister():
 
-    del bpy.types.Mesh.pydasptr
-    del bpy.types.Object.pydasptr
+    del bpy.types.Mesh.asptrex
+    del bpy.types.Object.asptrex
 
-    bpy.utils.unregister_class(PYDASPTR_PR_Mesh)
-    bpy.utils.unregister_class(PYDASPTR_PR_Object)
+    bpy.utils.unregister_class(ASPTREXAMPLE_PR_Mesh)
+    bpy.utils.unregister_class(ASPTREXAMPLE_PR_Object)
+
+    cleanse_modules()
 
     return None 
