@@ -10,7 +10,8 @@
                 "C:/Blender/3.4/source/source/source/blender/makesdna/",
                 "C:/Blender/3.4/source/source/source/blender/makesrna/",
                 "C:/Blender/3.4/source/source/source/blender/blenkernel/",
-                "C:/Blender/3.4/source/source/source/blender/blenlib/"
+                "C:/Blender/3.4/source/source/source/blender/blenlib/",
+                "C:/Blender/3.4/source/source/intern/guardedalloc/"
             ],
             "defines": [],
             "compilerPath": "C:/Users/doria/Desktop/C++/TDM-GCC-64/bin/gcc.exe",

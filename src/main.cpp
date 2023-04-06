@@ -29,13 +29,13 @@ You will need:
 //get pyd functions 
 #include "_read_obj_data.cpp"      //Example1: Reading the name from Object struct. We obtained the struct by including the original source code in our IDE
 #include "_read_mesh_elements.cpp" //Example2: Reading Mesh.vertices/edges/polygons/loops by looping their arrays, we replicate the simple meshdata struct in the project
-//#include "_read_mesh_data.cpp"     //Example3: Reading Mesh struct directly, the Mesh struct is harder to reproduce and to link in your project. (WIP)
+#include "_read_mesh_data.cpp"     //Example3: Reading Mesh struct directly, the Mesh struct is harder to reproduce and to link in your project. (WIP)
 
 //Define functions
 static PyMethodDef SimpleAddMethods[] = {
     {"read_obj_data",      read_obj_data,      METH_VARARGS, "Access Object data."},
     {"read_mesh_elements", read_mesh_elements, METH_VARARGS, "Access Mesh data each elements."},
-    //{"read_mesh_data",     read_mesh_data,     METH_VARARGS, "Access Mesh data."},
+    {"read_mesh_data",     read_mesh_data,     METH_VARARGS, "Access Mesh data."},
     {nullptr, nullptr, 0, nullptr}
 };
 

@@ -22,8 +22,9 @@
                 "-I", "C:/Blender/3.4/source/source/source/blender/makesrna/",
                 "-I", "C:/Blender/3.4/source/source/source/blender/blenkernel/", 
                 "-I", "C:/Blender/3.4/source/source/source/blender/blenlib/", 
-                //will be replaced by file name where CTRl+SHIFT+B shortcut is used
-                "${file}", 
+                "-I", "C:/Blender/3.4/source/source/intern/guardedalloc/", //desesperate
+                //main file to build
+                "main.cpp", 
                 //specify output, directly nuild in addon/pyext
                 "-o", "${fileDirname}/../pyext/readmem.pyd", 
                 //specify libraries for linker

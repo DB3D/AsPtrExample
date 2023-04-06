@@ -14,10 +14,10 @@
 //////////////////////////////////////////////////////
 
 //include 3.4/source/source/** in your dirs
-#include "DNA_object_types.h"
-#include "BKE_main.h"
-#include "BKE_object.h"
-#include "BLI_utildefines.h"
+#include <DNA_object_types.h>
+#include <BKE_main.h>
+#include <BKE_object.h>
+#include <BLI_utildefines.h>
 
 //////////////////////////////////////////////////////
 // Define pyd function 

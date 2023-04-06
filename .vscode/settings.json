@@ -52,6 +52,26 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "hash_map": "cpp",
+        "bitset": "cpp",
+        "charconv": "cpp",
+        "chrono": "cpp",
+        "condition_variable": "cpp",
+        "cstring": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "ratio": "cpp",
+        "regex": "cpp",
+        "fstream": "cpp",
+        "mutex": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "cfenv": "cpp",
+        "valarray": "cpp",
+        "variant": "cpp"
     }
 }

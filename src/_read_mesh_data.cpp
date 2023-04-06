@@ -8,21 +8,25 @@
 #include <sstream>
 #include <iostream>
 
+#include <BLI_span.hh>
+
 //////////////////////////////////////////////////////
 // Mirrorring "struct Mesh" Luxcore method
 //////////////////////////////////////////////////////
 
 /*
-Note struct Mesh is very difficult to include! has quite a few dependencies, didn't manage to make it work this time
+Note struct Mesh is quite hard to use outside of blender source code! it has quite a few dependencies
 https://github.com/blender/blender/blob/main/source/blender/makesdna/DNA_mesh_types.h
 #include "DNA_mesh_types.h"  // found in: ../3.4/source/blender/makesdna
 
-we need to match it with our own struct instead, LuxCore managed to do just that
+Here i followed the luxcore method, consisting of mirrorring the same struct as blender
 https://devtalk.blender.org/t/render-engine-add-ons-performance/19251/9
 https://github.com/LuxCoreRender/LuxCore/blob/master/include/luxcore/pyluxcore/blender_types.h
-and what will follow is a similar implementation 
-*/
+We are following this implementation in this file
 
+PLEASE NOTE this method require much more maintenance and understanding of source code than `_read_mesh_elements.cpp`
+*/
+/*
 #ifndef _BLENDER_TYPES_H
 #define _BLENDER_TYPES_H
 
@@ -44,26 +48,45 @@ typedef struct MLoopCol {
     unsigned char r, g, b, a;
 } MLoopCol;
 
-typedef struct MLoop {
-    /** Vertex index. */
-    unsigned int v;
-    /** Edge index. */
-    unsigned int e;
-} MLoop;
+/* Mesh Vertices. Typically accessed from #Mesh.verts()*/
+typedef struct MVert {
+  float co[3];
+  /*Deprecated flag for storing hide status and selection, which are now stored in separate generic attributes. Kept for file read and write. */
+  char flag_legacy;
+  /* Deprecated bevel weight storage, now located in #CD_BWEIGHT, except for file read and write. */
+  char bweight_legacy;
+  char _pad[2];
+} MVert;
 
+/* Mesh Edges. Typically accessed with #Mesh.edges() */
+typedef struct MEdge {
+  /* Un-ordered vertex indices (cannot match). */
+  unsigned int v1, v2;
+  /* Deprecated edge crease, now located in #CD_CREASE, except for file read and write. */
+  char crease_legacy;
+  /*Deprecated bevel weight storage, now located in #CD_BWEIGHT, except for file read and write.*/
+  char bweight_legacy;
+  short flag;
+} MEdge;
+
+/* Mesh Faces.This only stores the polygon size & flags, the vertex & edge indices are stored in the #MLoop. Typically accessed with #Mesh.polys(). */
 typedef struct MPoly {
-    /* offset into loop array and number of loops in the face */
-    int loopstart;
-    int totloop;
-    short mat_nr;
-    char flag, _pad;
+  /* Offset into loop array and number of loops in the face. */
+  int loopstart;
+  /* Keep signed since we need to subtract when getting the previous loop. */
+  int totloop;
+  /* Deprecated material index. Now stored in the "material_index" attribute, but kept for IO. */
+  short mat_nr_legacy;
+  char flag, _pad;
 } MPoly;
 
-struct MVert {
-    float co[3];
-    char flag, bweight;
-    char _pad[2];
-};
+/* Mesh Face Corners. "Loop" is an internal name for the corner of a polygon (#MPoly). Typically accessed with #Mesh.loops(). */
+typedef struct MLoop {
+  /* Vertex index into an #MVert array. */
+  unsigned int v;
+  /* Edge index into an #MEdge array. */
+  unsigned int e;
+} MLoop;
 
 struct RenderPass {
     struct RenderPass *next, *prev;
@@ -93,7 +116,6 @@ typedef struct {
     unsigned short num_row;
 } MatrixObject;
 
-
 // Mesh and dependencies (required for fast custom split normals support)
 
 // List of relevant files (as one line so it can be copy/pasted to open all files quickly in an editor)
@@ -101,10 +123,13 @@ typedef struct {
 
 #define DNA_DEPRECATED
 
-// Forward declarations of irrelevant structs
+// Forward declarations of irrelevant structs, we only use them by pointers
 struct Library;
 struct IDProperty;
 struct IDOverrideLibrary;
+struct AssetMetaData;
+struct LibraryWeakReference;
+struct ID_Runtime;
 struct BLI_mempool;
 struct CustomDataExternal;
 struct EditMeshData;
@@ -127,21 +152,47 @@ struct Multires;
 
 namespace bl_34 {   
 
-template<typename T> class Span;
-template<typename T> class MutableSpan;
+// template<typename T> class Span;
+// template<typename T> class MutableSpan;
 
 struct MeshRuntimeHandle;
+class AttributeAccessor;
+class MutableAttributeAccessor;
 
 // From blender/source/blender/makesdna/DNA_listBase.h
 typedef struct ListBase {
     void* first, * last;
 } ListBase;
 
-// From blender/source/blender/...
+// From blender/source/blender/makesdna/DNA_ID.h
+
+typedef struct ID_Runtime_Remap {
+  /** Status during ID remapping. */
+  int status;
+  /** During ID remapping the number of skipped use cases that refcount the data-block. */
+  int skipped_refcounted;
+  /**
+   * During ID remapping the number of direct use cases that could be remapped
+   * (e.g. obdata when in edit mode).
+   */
+  int skipped_direct;
+  /** During ID remapping, the number of indirect use cases that could not be remapped. */
+  int skipped_indirect;
+} ID_Runtime_Remap;
+
+typedef struct ID_Runtime {
+  ID_Runtime_Remap remap;
+} ID_Runtime;
+
 typedef struct ID {
     void* next, * prev;
     struct ID* newid;
+
     struct Library* lib;
+
+    /** If the ID is an asset, this pointer is set. Owning pointer. */
+    struct AssetMetaData *asset_data;
+
     /** MAX_ID_NAME. */
     char name[66];
     /**
@@ -155,20 +206,62 @@ typedef struct ID {
     int tag;
     int us;
     int icon_id;
-    int recalc;
-    char _pad[4];
-    IDProperty* properties;
-
-    /** Reference linked ID which this one overrides. */
-    IDOverrideLibrary* override_library;
-
+    unsigned int recalc;
     /**
-     * Only set for data-blocks which are coming from copy-on-write, points to
-     * the original version of it.
+     * Used by undo code. recalc_after_undo_push contains the changes between the
+     * last undo push and the current state. This is accumulated as IDs are tagged
+     * for update in the depsgraph, and only cleared on undo push.
+     *
+     * recalc_up_to_undo_push is saved to undo memory, and is the value of
+     * recalc_after_undo_push at the time of the undo push. This means it can be
+     * used to find the changes between undo states.
      */
-    struct ID* orig_id;
+    unsigned int recalc_up_to_undo_push;
+    unsigned int recalc_after_undo_push;
+    
+    /**
+     * A session-wide unique identifier for a given ID, that remain the same across potential
+     * re-allocations (e.g. due to undo/redo steps).
+     */
+    unsigned int session_uuid;
 
-    void* py_instance;
+  IDProperty *properties;
+
+  /** Reference linked ID which this one overrides. */
+  IDOverrideLibrary *override_library;
+
+  /**
+   * Only set for data-blocks which are coming from copy-on-write, points to
+   * the original version of it.
+   * Also used temporarily during memfile undo to keep a reference to old ID when found.
+   */
+  struct ID *orig_id;
+
+  /**
+   * Holds the #PyObject reference to the ID (initialized on demand).
+   *
+   * This isn't essential, it could be removed however it gives some advantages:
+   *
+   * - Every time the #ID is accessed a #BPy_StructRNA doesn't have to be created & destroyed
+   *   (consider all the polling and drawing functions that access ID's).
+   *
+   * - When this #ID is deleted, the #BPy_StructRNA can be invalidated
+   *   so accessing it from Python raises an exception instead of crashing.
+   *
+   *   This is of limited benefit though, as it doesn't apply to non #ID data
+   *   that references this ID (the bones of an armature or the modifiers of an object for e.g.).
+   */
+  void *py_instance;
+
+  /**
+   * Weak reference to an ID in a given library file, used to allow re-using already appended data
+   * in some cases, instead of appending it again.
+   *
+   * May be NULL.
+   */
+  struct LibraryWeakReference *library_weak_reference;
+
+  struct ID_Runtime runtime;
 } ID;
 
 typedef struct CustomDataLayer {
@@ -307,20 +400,6 @@ typedef struct Mesh {
      */
     float smoothresh;
 
-    /** Per-mesh settings for voxel remesh. */
-    float remesh_voxel_size;
-    float remesh_voxel_adaptivity;
-
-    int face_sets_color_seed;
-    /* Stores the initial Face Set to be rendered white. This way the overlay can be enabled by
-     * default and Face Sets can be used without affecting the color of the mesh. */
-    int face_sets_color_default;
-
-    /** The color attribute currently selected in the list and edited by a user. */
-    char* active_color_attribute;
-    /** The color attribute used by default (i.e. for rendering) if no name is given explicitly. */
-    char* default_color_attribute;
-
     /**
      * User-defined symmetry flag (#eMeshSymmetryType) that causes editing operations to maintain
      * symmetrical geometry. Supported by operations such as transform and weight-painting.
@@ -373,6 +452,15 @@ typedef struct Mesh {
     /* Deprecated size of #fdata. */
     int totface;
 
+    /** Per-mesh settings for voxel remesh. */
+    float remesh_voxel_size;
+    float remesh_voxel_adaptivity;
+
+    int face_sets_color_seed;
+    /* Stores the initial Face Set to be rendered white. This way the overlay can be enabled by
+    * default and Face Sets can be used without affecting the color of the mesh. */
+    int face_sets_color_default;
+
     char _pad1[4];
 
     /**
@@ -382,6 +470,52 @@ typedef struct Mesh {
      * free the data if they are passed to functions that expect run-time data.
      */
     MeshRuntimeHandle* runtime;
+
+    /**
+     * Array of vertex positions (and various other data). Edges and faces are defined by indices
+     * into this array.
+     */
+    blender::Span<MVert> verts() const;
+    /** Write access to vertex data. */
+    blender::MutableSpan<MVert> verts_for_write();
+    /**
+     * Array of edges, containing vertex indices. For simple triangle or quad meshes, edges could be
+     * calculated from the #MPoly and #MLoop arrays, however, edges need to be stored explicitly to
+     * edge domain attributes and to support loose edges that aren't connected to faces.
+     */
+    blender::Span<MEdge> edges() const;
+    /** Write access to edge data. */
+    blender::MutableSpan<MEdge> edges_for_write();
+    /**
+     * Face topology storage of the size and offset of each face's section of the face corners.
+     */
+    blender::Span<MPoly> polys() const;
+    /** Write access to polygon data. */
+    blender::MutableSpan<MPoly> polys_for_write();
+    /**
+     * Mesh face corners that "loop" around each face, storing the vertex index and the index of the
+     * subsequent edge.
+     */
+    blender::Span<MLoop> loops() const;
+    /** Write access to loop data. */
+    blender::MutableSpan<MLoop> loops_for_write();
+
+    AttributeAccessor attributes() const;
+    MutableAttributeAccessor attributes_for_write();
+
+    /**
+     * Vertex group data, encoded as an array of indices and weights for every vertex.
+     * \warning: May be empty.
+     */
+    blender::Span<MDeformVert> deform_verts() const;
+    /** Write access to vertex group data. */
+    blender::MutableSpan<MDeformVert> deform_verts_for_write();
+
+    /**
+     * Cached triangulation of the mesh.
+     */
+    blender::Span<MLoopTri> looptris() const;
+
 } Mesh;
 
 /** #CustomData.type */
@@ -466,7 +600,7 @@ typedef enum CustomDataType {
 } // end namespace bl_types
 
 #endif
-
+*/
 
 //////////////////////////////////////////////////////
 // Define pyd function 
@@ -485,8 +619,26 @@ static PyObject* read_mesh_data(PyObject* self, PyObject* args) {
     uintptr_t address = static_cast<uintptr_t>(address_int);
     bl_types::bl_34::Mesh* mesh = reinterpret_cast<bl_types::bl_34::Mesh*>(address);
 
-    std::cout << "mesh name:" << mesh->id.name << std::endl; //ERROR: Will crash
-    int num_verts = mesh->totvert; //ERROR: Will crash
+    //test prints
+    std::cout << "read_mesh_data() -> mesh totvert:" << mesh->totvert << std::endl;
+    std::cout << "read_mesh_data() -> mesh name:" << mesh->id.name << std::endl;
 
-    return Py_BuildValue("i", num_verts);
+    // Access Mesh data basic attr
+    auto vertices = mesh->verts();
+    int num_verts = vertices.size();
+
+    // Access mesh data mesh attr
+    for (int i = 0; i < num_verts; ++i) {
+        // Access vertex coordinates
+        float x = vertices[i].co[0];
+        float y = vertices[i].co[1];
+        float z = vertices[i].co[2];
+
+        // Print coordinates
+        std::cout << "read_mesh_data() v.co : (" << x << ", " << y << ", " << z << ")" << std::endl;
+    }
+
+    //return totverts
+    int r = mesh->totvert; 
+    return Py_BuildValue("i", r);
 }

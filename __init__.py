@@ -3,7 +3,7 @@ bl_info = {
     "name": "AsPtrExample",
     "author": "bd3d, GPT4",
     "version": (1, 0),
-    "blender": (3, 4, 0),
+    "blender": (3, 4, 0), #and 3.4 only!!! will need to quadruple check that our CPP struct are matching exact b3d source code
     "location": "",
     "description": "various example on how to use as_pointer() within a C++ compiled .pyd (Requirements: WinOS, blender3.40)",
     "warning": "",
@@ -13,8 +13,8 @@ bl_info = {
 
 # Test this plugin via the console: 
 # >>> C.object.asptrex.read_obj_data()
-# >>> C.object.data.asptrex.read_mesh_data()
-# >>> C.object.data.asptrex.render_mesh() -> & open "AsPointerRender" image
+# >>> C.object.data.asptrex.read_mesh_data() -> open "MeshReadings" image to verify mesh read
+# >>> C.object.data.asptrex.read_mesh_elements() -> open "MeshReadings" image to verify mesh read
 
 
 import bpy
@@ -45,17 +45,17 @@ class ASPTREXAMPLE_PR_Mesh(bpy.types.PropertyGroup):
             )
         return r
 
-    def render_mesh(self,):
-        """pass mesh elements first item as_pointer() and their lenght, process the mesh into another Mesh struct, and render this mesh in a new image 'AsPointerRender'"""
+    def read_mesh_elements(self,):
+        """pass mesh elements first item as_pointer() and their lenght, verify mesh readings with 'MeshReadings' image'"""
 
         mesh = self.id_data
 
         # Create a new image or get the existing one
 
         height,width = 1080,1920 #1080x1920 is non-negotiable for this project
-        image = bpy.data.images.get("AsPointerRender")
+        image = bpy.data.images.get("MeshReadings")
         if (image is None):
-               image = bpy.data.images.new("AsPointerRender", width=width, height=height)
+               image = bpy.data.images.new("MeshReadings", width=width, height=height)
         else: image.scale(width, height)
 
         # #Test-Print if we did read the correct information in our C++ module
