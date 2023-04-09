@@ -5,7 +5,7 @@ bl_info = {
     "version": (1, 0),
     "blender": (3, 4, 0), #and 3.4 only!!! will need to quadruple check that our CPP struct are matching exact b3d source code
     "location": "",
-    "description": "various example on how to use as_pointer() within a C++ compiled .pyd (Requirements: WinOS, blender3.40)",
+    "description": "various example on how to use as_pointer() within a C++ compiled .pyds (Requirements: WinOS, blender3.40)",
     "warning": "",
     "category": "",
 }
@@ -20,7 +20,7 @@ bl_info = {
 import bpy
 import numpy as np
 
-from . import pyext #access ../pyext/readmem.pyd
+from . import pyds #access ../pyds/readmem.pyd
 
 
 class ASPTREXAMPLE_PR_Object(bpy.types.PropertyGroup):
@@ -29,7 +29,7 @@ class ASPTREXAMPLE_PR_Object(bpy.types.PropertyGroup):
         """pass object adress and access it's name"""
 
         obj = self.id_data
-        r = pyext.readmem.read_obj_data(
+        r = pyds.readmem.read_obj_data(
             obj.as_pointer(),
             )
         return r
@@ -40,7 +40,7 @@ class ASPTREXAMPLE_PR_Mesh(bpy.types.PropertyGroup):
         """pass mesh data as pointer, LuxCore style, not advised  WIP currently it's crashing"""
 
         mesh = self.id_data
-        r = pyext.readmem.read_mesh_data(
+        r = pyds.readmem.read_mesh_data(
             mesh.as_pointer(),
             )
         return r
@@ -79,7 +79,7 @@ class ASPTREXAMPLE_PR_Mesh(bpy.types.PropertyGroup):
         # Verts/Edges/Polygons/Loops [0] adress and their length
         # Advice from Brecht: https://devtalk.blender.org/t/creating-a-mesh-struct-similar-to-blender/28601/9?u=bd3d
         
-        pixels_byte_array = pyext.readmem.read_mesh_elements(
+        pixels_byte_array = pyds.readmem.read_mesh_elements(
             mesh.vertices[0].as_pointer(),
             mesh.edges[0].as_pointer(),
             mesh.polygons[0].as_pointer(),
