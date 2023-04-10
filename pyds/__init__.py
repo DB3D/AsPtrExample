@@ -5,7 +5,8 @@ if True:
     import os, shutil
     
     # locate our blender library build output 
-    dll_path = "C:/Blender/builds/3.4/build_windows_x64_vc17_Release/bin/Release/bakedpyd_AsPtrExample/readmem.dll"
+    dll_path = "B:/Blender/3.4s/build_windows_x64_vc16_Release/bin/Release/bakedpyd_AsPtrExample/readmem.dll"
+                
     pyd_path = os.path.join(os.path.dirname(__file__),"readmem.pyd")
     
     # if exists, we update our libs to latest version
