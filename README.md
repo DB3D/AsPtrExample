@@ -19,7 +19,7 @@ In order to recreate the matching blender structure we have 3 possibilities:
 
 1.  Creating a mirror struct from scratch, ( _Example2_ and _Example5_ is exploring this solution). Note that mirrorring some struct might be challenging, might vary depending on your blender version you'd like to support, and it might not be possible for some more complex struct.
 2.  Including blender header in your project.  But you will see quickly that blender C API was not made to be used externally, at best, you'll have a few other dependency files to include, at worst, you'll be digging deep in blender source code rabbit hole to include and link all the needed dependences for the struct you are trying to read. It might lead you nowhere.
-3.  Building your .pyd within blender source code directly. Instead of trying to use C API that was never designed to be used in external projects, you can include your whole project within blender source code directly, and tell CMake to build your .pyd when building blender itself. This is the technique we are using on this project on _Example 1,3,4_ , more detail on how this is done in /pyds/source/README.md.
+3.  Building your .pyd within blender source code directly. Instead of trying to use C API that was never designed to be used in external projects, you can include your whole project within blender source code directly, and tell CMake to build your .pyd when building blender itself. This is the technique we are using on this project and that _Example 1,3,4_  is reliant upon, more detail on how this is done in /pyds/source/README.md.
 
 ---
 

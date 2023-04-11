@@ -4,11 +4,11 @@
 
 #include <Python.h>
 
-#include "read_obj_data.cpp"
-#include "read_mesh_data.cpp"
-#include "read_mesh_elements_mirror.cpp"
-#include "read_mesh_data_mirror.cpp"
-#include "render_obj.cpp"
+#include "read_obj_data.cpp" //Example1
+#include "read_mesh_data.cpp" //Example3
+#include "read_mesh_elements_mirror.cpp" //Example2
+#include "read_mesh_data_mirror.cpp" //Example5
+#include "render_obj.cpp" //Example4
 
 //Define functions
 static PyMethodDef ReadMemFunctions[] = {
