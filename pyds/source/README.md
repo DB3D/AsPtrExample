@@ -6,7 +6,7 @@
     `..\blender >>> git checkout blender-v3.4-release`  
     `..\blender >>> git checkout -b my_blender_3.4.0_branch`  
     `..\blender >>> git submodule update --init --recursive`  
-    `..\lib\win64_vc15 >>> svn checkout` [`https://svn.blender.org/svnroot/bf-blender/tags/blender-3.4-release/lib/win64_vc15/`](https://svn.blender.org/svnroot/bf-blender/tags/blender-3.3-release/lib/win64_vc15/)  
+    `..\lib\win64_vc15 >>> svn checkout https://svn.blender.org/svnroot/bf-blender/tags/blender-3.4-release/lib/win64_vc15/`
     `..\blender >>> make`
 2.  Create a new folder containing the project source code in a directory of your choice. in the context of this project i advise you do use `blender\source\source\makepyd_MyProject\`
 3.  Tell cmake to include your project within blender build process, to do so, add the following line of code  
