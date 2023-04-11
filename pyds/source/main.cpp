@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later
+ * Copyright NaN Holding BV. All rights reserved. */
 
 #include "buildinfo.h" // buildinfo needed in order to build with included BKE files
                        // else, won't compile...

@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later
+ * Copyright NaN Holding BV. All rights reserved. */
 
 // Example2: Access mesh data by creating mirror structs and passing mesh elements array separately
 //           That's your best bet, if you don't want to build your .pyd alonside blender CMake

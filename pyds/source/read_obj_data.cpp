@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later
+ * Copyright NaN Holding BV. All rights reserved. */
 
 // Example1: Access obj data directly by reading Object struct
 

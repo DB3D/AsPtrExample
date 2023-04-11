@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later
+ * Copyright NaN Holding BV. All rights reserved. */
 
 // Example3: Access mesh data directly by reading Mesh struct
 

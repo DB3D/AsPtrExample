@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later
+ * Copyright NaN Holding BV. All rights reserved. */
 
 // Example5: Access mesh data by creating mirror structs, 
 //           These struct are more challenging to recreate than Example2, you'll need to be very carreful to not get anything wrong

@@ -1,6 +1,5 @@
-/** \file
- * \ingroup creator
- */
+/* SPDX-License-Identifier: GPL-2.0-or-later
+ * Copyright NaN Holding BV. All rights reserved. */
 
 #ifdef WITH_BUILDINFO_HEADER
 #  include "buildinfo.h"
