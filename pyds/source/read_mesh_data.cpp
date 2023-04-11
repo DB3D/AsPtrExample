@@ -36,12 +36,12 @@ static PyObject* read_mesh_data(PyObject* self, PyObject* args) {
     std::cout << " mesh->totvert : " << mesh->totvert << std::endl;
 
     // example reading first 3 vertices co
-    MVert *mvert_data = static_cast<MVert *>(CustomData_get_layer(&mesh->vdata, CD_MVERT));
-    if (mvert_data != nullptr && mesh->totvert >= 3) {
+    MVert *vdata = static_cast<MVert *>(CustomData_get_layer(&mesh->vdata, CD_MVERT));
+    if (vdata != nullptr && mesh->totvert >= 3) {
         for (int i = 0; i < 3; ++i) {
-            float x = mvert_data[i].co[0];
-            float y = mvert_data[i].co[1];
-            float z = mvert_data[i].co[2];
+            float x = vdata[i].co[0];
+            float y = vdata[i].co[1];
+            float z = vdata[i].co[2];
             std::cout << " vdata[" << i << "].co : (" << x << ", " << y << ", " << z << ")" << std::endl;
         };
     };

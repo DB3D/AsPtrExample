@@ -37,7 +37,6 @@ class ASPTREXAMPLE_PR_Object(bpy.types.PropertyGroup):
         #  - we could pass a directly flatten RGBA value, instead of doing extra np manipulations
         #  - we could pass a numpy array directly instead of a byte_array
         #  - even better, we could pass the image data address directly from our function
-        #.. maybe for an Example 5..
                 
         obj = self.id_data
         mesh = obj.data
@@ -66,7 +65,7 @@ class ASPTREXAMPLE_PR_Object(bpy.types.PropertyGroup):
 class ASPTREXAMPLE_PR_Mesh(bpy.types.PropertyGroup):
 
     #Example2
-    def read_mesh_data_mirror(self,):
+    def read_mesh_elements_mirror(self,):
         """pass mesh verts/edges/polys/loops adresses and their lengths, to read the mesh structure from memory (open console to view the prints)"""
 
         mesh = self.id_data
@@ -81,7 +80,7 @@ class ASPTREXAMPLE_PR_Mesh(bpy.types.PropertyGroup):
         # Advice from Brecht: https://devtalk.blender.org/t/creating-a-mesh-struct-similar-to-blender/28601/9?u=bd3d
         #inconvenient method, but needed if you do not wish to build your .pyd's from blender build process
         
-        pyds.readmem.read_mesh_data_mirror(
+        pyds.readmem.read_mesh_elements_mirror(
             mesh.vertices[0].as_pointer(),
             mesh.edges[0].as_pointer(),
             mesh.polygons[0].as_pointer(),
@@ -106,6 +105,23 @@ class ASPTREXAMPLE_PR_Mesh(bpy.types.PropertyGroup):
                 print(" ",i," : ",v.co)
         
         pyds.readmem.read_mesh_data(
+            mesh.as_pointer(),
+            )
+        
+        return None
+
+    #Example5
+    def read_mesh_data_mirror(self,):
+        """pass mesh data adress and access it's properties and mesh data (open console to view the prints)"""
+
+        mesh = self.id_data
+        
+        print("first 3 edges vertices idx from bpy:")
+        for i,e in enumerate(mesh.edges):
+            if (i<3):
+                print(" ",i," : ",e.vertices[:])
+        
+        pyds.readmem.read_mesh_data_mirror(
             mesh.as_pointer(),
             )
         

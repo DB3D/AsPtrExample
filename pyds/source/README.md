@@ -18,3 +18,7 @@
 
 - You'll need to build a .pyd for each blender version your plugin will support.
 - You'll need to build a .pyd for each OS's you want to support
+
+**Alternatives:**
+
+- **Example2** and **Example5** could be built outside of blender Cmake build process as these example use mirror struct and do not include any of blender source file
