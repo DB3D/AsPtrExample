@@ -343,6 +343,8 @@ typedef enum CustomDataType {
 // Blender struct access functions
 //------------------------------------------------------------------------------
 
+namespace bl_fct {
+
 template<typename CustomData>
 static int CustomData_get_active_layer_index(const CustomData *data, int type)
 {
@@ -391,6 +393,8 @@ static void* CustomData_get_layer_named(const CustomData* data, int type, const 
 	return data->layers[layer_index].data;
 }
 
+} // end namespace bl_fct
+
 //----------------------------------------------------------------------------------------------
 // Main function:
 //----------------------------------------------------------------------------------------------
@@ -416,7 +420,7 @@ static PyObject* read_mesh_data_mirror(PyObject* self, PyObject* args) {
     std::cout << " mesh->totedge : " << mesh->totedge << std::endl;
 
     // example reading first 3 vertices co
-    bl_types::MEdge *edata = static_cast<bl_types::MEdge *>(CustomData_get_layer(&mesh->edata, bl_types::bl_34::CD_MEDGE));
+    bl_types::MEdge *edata = static_cast<bl_types::MEdge *>(bl_fct::CustomData_get_layer(&mesh->edata, bl_types::bl_34::CD_MEDGE));
     if (edata != nullptr && mesh->totedge >= 3) {
         for (int i = 0; i < 3; ++i) {
             std::cout << " edata[" << i << "].v : (" <<  edata[i].v1 << ", " << edata[i].v2 << ")" << std::endl;
