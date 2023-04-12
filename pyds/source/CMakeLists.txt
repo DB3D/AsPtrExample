@@ -9,6 +9,9 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/source/blender/makesrna
   ${CMAKE_SOURCE_DIR}/source/blender/blenkernel
   ${CMAKE_SOURCE_DIR}/source/blender/blenlib
+  ${CMAKE_SOURCE_DIR}/source/blender/imbuf
+  ${CMAKE_SOURCE_DIR}/source/blender/depsgraph
+  ${CMAKE_SOURCE_DIR}/source/blender/windowmanager
   ${CMAKE_SOURCE_DIR}/intern/guardedalloc
 )
 

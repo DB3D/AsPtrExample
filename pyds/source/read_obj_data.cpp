@@ -21,7 +21,7 @@ static PyObject* read_obj_data(PyObject* self, PyObject* args) {
     // check if args are correct
     if (!PyArg_ParseTuple(args, "K", &address_int)) {
         return nullptr;
-    }
+    };
     
     std::cout << "running read_obj_data in C++" << std::endl;
 
@@ -44,9 +44,9 @@ static PyObject* read_obj_data(PyObject* self, PyObject* args) {
         case OB_TEXTURE: draw_type_str = "TEXTURED"; break;
         case OB_RENDER: draw_type_str = "RENDERED"; break;
         default: draw_type_str = "UNKNOWN"; break;
-    }
+    };
     std::cout << " obj->dt : " << draw_type_str << std::endl;
 
     //return None, this function just print in console
     Py_RETURN_NONE;
-}
+};

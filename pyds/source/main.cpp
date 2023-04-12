@@ -3,22 +3,25 @@
 
 #include "buildinfo.h" // buildinfo needed in order to build with included BKE files
                        // else, won't compile...
-
 #include <Python.h>
 
-#include "read_obj_data.cpp" //Example1
-#include "read_mesh_data.cpp" //Example3
-#include "read_mesh_elements_mirror.cpp" //Example2
-#include "read_mesh_data_mirror.cpp" //Example5
-#include "render_obj.cpp" //Example4
+#include "read_obj_data.cpp"             // Ex 1
+#include "read_mesh_elements_mirror.cpp" // Ex 2
+#include "read_mesh_data.cpp"            // Ex 3
+#include "render_obj.cpp"                // Ex 4
+#include "read_mesh_data_mirror.cpp"     // Ex 5
+#include "write_img_data.cpp"            // Ex 6
+#include "write_mesh_data.cpp"           // Ex 7
 
 //Define functions
 static PyMethodDef ReadMemFunctions[] = {
     {"read_obj_data", read_obj_data, METH_VARARGS, "Read Object data properties"},
-    {"read_mesh_data", read_mesh_data, METH_VARARGS, "Read Mesh data properties and mesh structure"},
     {"read_mesh_elements_mirror", read_mesh_elements_mirror, METH_VARARGS, "Read Mesh elements via mirror structs."},
-    {"read_mesh_data_mirror", read_mesh_data_mirror, METH_VARARGS, "Read Mesh data via mirror structs and function."},
+    {"read_mesh_data", read_mesh_data, METH_VARARGS, "Read Mesh data properties and mesh structure"},
     {"render_obj", render_obj, METH_VARARGS, "Render the object in a quick HD wireframe render."},
+    {"read_mesh_data_mirror", read_mesh_data_mirror, METH_VARARGS, "Read Mesh data via mirror structs and function."},
+    {"write_img_data", write_img_data, METH_VARARGS, "Directly write an image from memory."},
+    {"write_mesh_data", write_mesh_data, METH_VARARGS, "Directly write a object mesh data from memory."},
     {nullptr, nullptr, 0, nullptr}
 };
 
@@ -34,4 +37,4 @@ static struct PyModuleDef readmemmodule = {
 //Create the Module
 PyMODINIT_FUNC PyInit_readmem(void) {
     return PyModule_Create(&readmemmodule);
-}
+};

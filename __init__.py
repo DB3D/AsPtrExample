@@ -63,7 +63,6 @@ class ASPTREXAMPLE_PR_Object(bpy.types.PropertyGroup):
 
         return None
     
-    
 class ASPTREXAMPLE_PR_Mesh(bpy.types.PropertyGroup):
 
     #Example2
@@ -128,7 +127,84 @@ class ASPTREXAMPLE_PR_Mesh(bpy.types.PropertyGroup):
             )
         
         return None
+    
+#Example6
+class ASPTREXAMPLE_OT_write_img_data(bpy.types.Operator):
+    
+    bl_idname = "asptrex.write_img_data"
+    bl_label = "Change image pixels from memory"
+    bl_options = {'REGISTER'}
+        
+    def upd_alpha_strength(self,context):
+        
+        img = bpy.data.images.get(self.img_name)
+        if (not img):
+            raise Exception("No Image found")
+        
+        #on each update, we are re-sending the memory adress to our binaries
+        #binary will directly write the new image from memory
+        
+        pyds.readmem.write_img_data(
+            img.as_pointer(),
+            self.alpha_strength,
+            )
+        
+        return None
+    
+    img_name : bpy.props.StringProperty(
+        default="",
+        )
+    
+    alpha_strength : bpy.props.FloatProperty(
+        name="Alpha Strength",
+        default=1.0,
+        min=0,
+        max=1,
+        update=upd_alpha_strength,
+        )
+    
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+    
+    def draw(self, context):
+        layout = self.layout
+        layout.prop_search(self, "img_name", bpy.data, "images", text="",)
+        layout.prop(self, "alpha_strength")
+        return None
+        
+    def execute(self, context):
+        return {'FINISHED'}
+    
+#Example7
+class ASPTREXAMPLE_OT_write_mesh_data(bpy.types.Operator):
+    
+    bl_idname = "asptrex.write_mesh_data"
+    bl_label = "Change object mesh from memory (offset on Z)"
+    bl_options = {'REGISTER'}
+    
+    zpush : bpy.props.FloatProperty(default=1.0,)
 
+    def execute(self, context):
+
+        obj = context.object
+        pyds.readmem.write_mesh_data(   
+            obj.as_pointer(),
+            self.zpush,
+            )
+
+        #update, done via python, couldn't find a way to do it from c++. Looks like we need bContext, and got trouble with passing context correctly
+        obj.data.update()
+        
+        return {'FINISHED'}
+
+classes = (
+    
+    ASPTREXAMPLE_PR_Object,
+    ASPTREXAMPLE_PR_Mesh,
+    ASPTREXAMPLE_OT_write_img_data,
+    ASPTREXAMPLE_OT_write_mesh_data,
+    
+    )
 
 def cleanse_modules():
     """remove all plugin modules from sys.modules, will load them again, creating an effective hit-reload soluton
@@ -147,8 +223,8 @@ def cleanse_modules():
 
 def register():
 
-    bpy.utils.register_class(ASPTREXAMPLE_PR_Object)
-    bpy.utils.register_class(ASPTREXAMPLE_PR_Mesh)
+    for cls in classes:
+        bpy.utils.register_class(cls)
 
     bpy.types.Object.asptrex = bpy.props.PointerProperty(type=ASPTREXAMPLE_PR_Object)
     bpy.types.Mesh.asptrex = bpy.props.PointerProperty(type=ASPTREXAMPLE_PR_Mesh)
@@ -160,8 +236,8 @@ def unregister():
     del bpy.types.Mesh.asptrex
     del bpy.types.Object.asptrex
 
-    bpy.utils.unregister_class(ASPTREXAMPLE_PR_Mesh)
-    bpy.utils.unregister_class(ASPTREXAMPLE_PR_Object)
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)
 
     cleanse_modules()
 

@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include "DNA_mesh_types.h" // Access struct Mesh
-
 #include "BKE_mesh.h" // Access CustomData_get_layer
                       // Note that including BKE will lead us to:
                       //  - set up buildinfo's 
@@ -25,7 +24,7 @@ static PyObject* read_mesh_data(PyObject* self, PyObject* args) {
     // check if args are correct
     if (!PyArg_ParseTuple(args, "K", &address_int)) {
         return nullptr;
-    }
+    };
 
     std::cout << "running read_mesh_data in C++" << std::endl;
 

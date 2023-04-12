@@ -34,5 +34,9 @@ In order to recreate the matching blender structure we have 3 possibilities:
 4.  Reading the object mesh elements by passing `object.as_pointer()`   
     run `C.object.asptrex.render_obj()` in blender python console, there will be a new “WireFrameRender” image in your image editor (see image below)
 5.  Same as example2 but by using mirror struct (same technique [Luxcore](https://github.com/LuxCoreRender/LuxCore/blob/master/include/luxcore/pyluxcore/blender_types.h) is using)
+6.  Directy write an image data from memory by passing `img.as_pointer()`  
+    search for `write_img_data` operator to test this example
+7.  Directy write an object data from memory by passing `obj.as_pointer()`  
+    search for `write_mesh_data` operator to test this example
 
 ![Screenshot 2023-03-30 152718](https://user-images.githubusercontent.com/56720730/228869371-422ea721-bdf5-433e-9312-0f7000520a51.jpg)
