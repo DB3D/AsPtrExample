@@ -10,14 +10,13 @@
 #include <sstream>
 #include <iostream>
 
-#include "DNA_object_types.h" // Access struct Object
-#include "DNA_mesh_types.h" // Access struct Mesh
-#include "BKE_mesh.h" // Access CustomData_get_layer
+#include "DNA_object_types.h" // struct Object
+#include "DNA_mesh_types.h" // struct Mesh
+#include "BKE_mesh.h" // CustomData_get_layer
 
 // Unused
-// #include "BKE_context.h" // Access bContext
-// #include "DEG_depsgraph.h" // Access DEG_id_tag_update
-// #include "WM_api.h" // send update signal
+// #include "BKE_context.h" // bContext
+// #include "DEG_depsgraph.h" // DEG_id_tag_update
 
 // Main function:
 
@@ -32,7 +31,7 @@ static PyObject* write_mesh_data(PyObject* self, PyObject* args) {
 
     std::cout << "running write_mesh_data in C++" << std::endl;
 
-    // Unusured, I tried hard to work with bContext in this example by always failed. For some reasons, bContext always seems empty
+    // Unusured, I tried hard to work with bContext in this example but always failed. For some reasons, bContext always seems empty
     //
     // interpret memory of our context address
     // uintptr_t adress = static_cast<uintptr_t>(address_int);
@@ -61,9 +60,11 @@ static PyObject* write_mesh_data(PyObject* self, PyObject* args) {
         };
     };
 
+    // TODO: Find a way to send update signal? how?
     // mark current cache as dirty
-    BKE_mesh_batch_cache_dirty_tag(static_cast<Mesh *>(obj->data), BKE_MESH_BATCH_DIRTY_ALL);
-
+    // BKE_mesh_batch_cache_dirty_tag(static_cast<Mesh *>(obj->data), BKE_MESH_BATCH_DIRTY_ALL);
+    // DEG_id_tag_update 
+    
     //return None, this function just print in console
     Py_RETURN_NONE;
 };

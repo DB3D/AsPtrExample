@@ -8,8 +8,8 @@
 #include <sstream>
 #include <iostream>
 
-#include "DNA_object_types.h"
-#include "DNA_mesh_types.h"
+#include "DNA_object_types.h" // struct Object
+#include "DNA_mesh_types.h" // struct Mesh
 #include "BKE_mesh.h"
 
 // Describing a more simpler mesh format

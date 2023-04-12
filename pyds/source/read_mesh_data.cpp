@@ -10,11 +10,12 @@
 #include <sstream>
 #include <iostream>
 
-#include "DNA_mesh_types.h" // Access struct Mesh
-#include "BKE_mesh.h" // Access CustomData_get_layer
-                      // Note that including BKE will lead us to:
-                      //  - set up buildinfo's 
-                      //  - link many more libraries
+#include "DNA_mesh_types.h" // struct Mesh
+#include "BKE_mesh.h" // CustomData_get_layer
+
+// Note that including BKE will lead us to:
+//  - set up buildinfo's 
+//  - link many more libraries
 
 // Main function:
 

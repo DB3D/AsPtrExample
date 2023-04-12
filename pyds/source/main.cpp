@@ -12,6 +12,7 @@
 #include "read_mesh_data_mirror.cpp"     // Ex 5
 #include "write_img_data.cpp"            // Ex 6
 #include "write_mesh_data.cpp"           // Ex 7
+#include "write_scene_data.cpp"          // Ex 8
 
 //Define functions
 static PyMethodDef ReadMemFunctions[] = {
@@ -22,6 +23,8 @@ static PyMethodDef ReadMemFunctions[] = {
     {"read_mesh_data_mirror", read_mesh_data_mirror, METH_VARARGS, "Read Mesh data via mirror structs and function."},
     {"write_img_data", write_img_data, METH_VARARGS, "Directly write an image from memory."},
     {"write_mesh_data", write_mesh_data, METH_VARARGS, "Directly write a object mesh data from memory."},
+    {"write_scene_data", (PyCFunction)write_scene_data, METH_VARARGS | METH_KEYWORDS, "Directly write a scene data from memory."}, //example of named arguments
+
     {nullptr, nullptr, 0, nullptr}
 };
 

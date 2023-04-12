@@ -10,8 +10,8 @@
 #include <sstream>
 #include <iostream>
 
-#include "DNA_object_types.h" // Access: struct Object
-#include "DNA_object_enums.h" // Access: eDrawType
+#include "DNA_object_types.h" // struct Object
+#include "DNA_object_enums.h" // eDrawType
 
 // Main function:
 

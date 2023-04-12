@@ -12,10 +12,10 @@
 #include <cstdint>
 #include <cstddef>
 
-#include "DNA_image_types.h" // access struct Image
+#include "DNA_image_types.h" // struct Image
 #include "IMB_imbuf.h" // for IMB_rect_from_float
-#include "IMB_imbuf_types.h" // access struct ImBuf
-#include "BKE_image.h" // access BKE_image_acquire_ibuf which is needed to get toward the pixels array in C API
+#include "IMB_imbuf_types.h" // struct ImBuf
+#include "BKE_image.h" // BKE_image_acquire_ibuf which is needed to get toward the pixels array in C API
 
 // Main function:
 

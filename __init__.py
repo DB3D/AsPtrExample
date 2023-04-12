@@ -179,7 +179,7 @@ class ASPTREXAMPLE_OT_write_img_data(bpy.types.Operator):
 class ASPTREXAMPLE_OT_write_mesh_data(bpy.types.Operator):
     
     bl_idname = "asptrex.write_mesh_data"
-    bl_label = "Change object mesh from memory (offset on Z)"
+    bl_label = "Change object mesh from memory (offset verts on Z)"
     bl_options = {'REGISTER'}
     
     zpush : bpy.props.FloatProperty(default=1.0,)
@@ -196,13 +196,35 @@ class ASPTREXAMPLE_OT_write_mesh_data(bpy.types.Operator):
         obj.data.update()
         
         return {'FINISHED'}
+    
+#Example8
+class ASPTREXAMPLE_OT_write_scene_data(bpy.types.Operator):
+    
+    bl_idname = "asptrex.write_scene_data"
+    bl_label = "Attempt to change scene object's locations from memory (impossible?)"
+    bl_options = {'REGISTER'}
 
+    def execute(self, context):
+
+        deg = context.evaluated_depsgraph_get()
+        
+        pyds.readmem.write_scene_data(
+            ctx_ptr= context.as_pointer(), 
+            deg_ptr= deg.as_pointer(), # pass deg so we can update it
+            scn_ptr= context.scene.as_pointer(),
+            )
+        
+        bpy.context.view_layer.update() # ??
+        
+        return {'FINISHED'}
+    
 classes = (
     
     ASPTREXAMPLE_PR_Object,
     ASPTREXAMPLE_PR_Mesh,
     ASPTREXAMPLE_OT_write_img_data,
     ASPTREXAMPLE_OT_write_mesh_data,
+    ASPTREXAMPLE_OT_write_scene_data,
     
     )
 
